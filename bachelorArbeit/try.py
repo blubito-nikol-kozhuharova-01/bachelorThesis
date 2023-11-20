@@ -1273,19 +1273,23 @@ from skimage.measure import label
 
 from skimage import io, exposure
 
-# Load the image
-image = io.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp')
-# gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+# # Load the image
+# image = io.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp')
+# # gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#
+# # Apply contrast stretching
+# p2, p98 = np.percentile(image, (80, 99))
+# stretched_image = exposure.rescale_intensity(image, in_range=(p2, p98))
+# # colormap_image = cv2.applyColorMap(stretched_image, cv2.COLORMAP_JET)
+# rgb_stretched_image = cv2.cvtColor(stretched_image, cv2.COLOR_BGR2RGB)
+# gray_image = cv2.cvtColor(stretched_image, cv2.COLOR_BGR2GRAY)
+# cv2.imshow('gray image', gray_image)
+# cv2.imshow('rgb stretched image', rgb_stretched_image)
+# cv2.imshow('thresholded image', stretched_image)
+# # Wait for key press
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
-# Apply contrast stretching
-p2, p98 = np.percentile(image, (80, 99))
-stretched_image = exposure.rescale_intensity(image, in_range=(p2, p98))
-# colormap_image = cv2.applyColorMap(stretched_image, cv2.COLORMAP_JET)
-rgb_stretched_image = cv2.cvtColor(stretched_image, cv2.COLOR_BGR2RGB)
-gray_image = cv2.cvtColor(stretched_image, cv2.COLOR_BGR2GRAY)
-cv2.imshow('gray image', gray_image)
-cv2.imshow('rgb stretched image', rgb_stretched_image)
-cv2.imshow('thresholded image', stretched_image)
-# Wait for key press
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+import tkinter as tk
+root=tk.Tk()
+root.mainloop()
