@@ -11,13 +11,13 @@ from calculateArea import calculate_area
 from contrastStretchFunc import apply_contrast_stretching
 
 # Load the image
-# originalImage = cv2.imread("../../images/ctisus/ctisusBmp/adrenal_1-01.bmp")
+originalImage = cv2.imread("../../images/ctisus/ctisusBmp/adrenal_1-01.bmp")
 # originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-02.bmp")
 # originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-03.bmp")
 # originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-05.bmp")
 # originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-06.bmp")
 # originalImage = cv2.imread("./petCTimagesBMP/adrenal-3C.bmp")
-originalImage = cv2.imread("./petCTimagesBMP/adrenal-3D.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-3D.bmp")
 # originalImage = cv2.imread("./petCTimagesBMP/adrenal-5B.bmp")
 # originalImage = cv2.imread("./petCTimagesBMP/adrenal-7C.bmp")
 # originalImage = cv2.imread("./petCTimagesBMP/adrenal-9B.bmp")
@@ -51,7 +51,7 @@ cv2.imshow('Filtered Image', sharpenFilteredImageArr)
 for i, segment in enumerate(segments):
     segment_filename = f'segment_{i}.bmp'
     segment_path = os.path.join(output_dir, segment_filename)
-    cv2.imwrite(segment_path, segment)
+    # cv2.imwrite(segment_path, segment)
     cv2.imshow(f'Segment {i}', segment)
     if i == 1:
         # Convert the segment to grayscale
