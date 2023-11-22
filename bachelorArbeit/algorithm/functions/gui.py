@@ -63,8 +63,6 @@ def apply_segmentation(segmentation_method):
             segment_path = os.path.join(output_dir, segment_filename)
             # cv2.imwrite(segment_path, segment)
             cv2.imshow(f'Segment {i}', segment)
-        # Allow the user to select a segment
-        selected_segment_index = ask_for_segment_index(len(segments))
         # Wait for key press
         cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -83,10 +81,14 @@ def select_ksize(ksize_str):
     return size
 
 
-def ask_for_segment_index(num_segments):
-    # Function to ask the user for the segment index
-    segment_index = simpledialog.askinteger("Input", f"Enter segment index (0 to {num_segments - 1}):", parent=root, minvalue=0, maxvalue=num_segments - 1)
-    return segment_index
+def display_and_select_segment():
+    global selected_segment_index
+    segments = kMeans_segment_image(filtered_image, 5)
+    for i, segment in enumerate(segments):
+        cv2.imshow(f'Segment {i}', segment)
+
+    # Allow the user to select a segment
+    selected_segment_index = simpledialog.askinteger("Input", f"Enter segment index (0 to {len(segments) - 1}):", parent=root, minvalue=0, maxvalue=len(segments) - 1)
 
 def save_selected_segment():
     global selected_segment_index
@@ -142,6 +144,10 @@ k_means_clustering_button = tk.Button(left_frame, text="Apply k-Means Clustering
                                           command=lambda: apply_segmentation("kMeans"))
 k_means_clustering_button.pack()
 
+
+# Display and Select Segments Button
+display_select_button = tk.Button(left_frame, text="Display and Select Segments", command=display_and_select_segment)
+display_select_button.pack(pady=15)
 
 # Save Selected Segment Button
 save_segment_button = tk.Button(left_frame, text="Save Selected Segment", command=save_selected_segment)
