@@ -102,6 +102,7 @@ def save_selected_segment():
 
 
 
+
 left_frame = tk.Frame(root, width=200, height=600)      #This line creates a frame widget (tk.Frame) named left_frame. The frame is a rectangular area that can hold other widgets. It's given a width of 200 pixels, a height of 600 pixels, and a background color of white.
 left_frame.pack(side="left", fill="y")      # This line uses the .pack() method to display the left_frame on the left side of the root window (root). It takes up the entire available vertical space due to fill="y".
 
