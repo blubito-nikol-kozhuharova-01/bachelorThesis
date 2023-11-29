@@ -1,10 +1,15 @@
+import cv2
 import numpy as np
 import tkinter as tk
 from tkinter import filedialog
 from PIL import Image, ImageTk
 from tkinter import ttk
+from tkinter import simpledialog
 from medianFilterFunc import apply_median_filter, apply_sharpen_filter
 from contrastStretchFunc import apply_contrast_stretching
+from kMeansClusteringFunc import kMeans_segment_image
+import os
+
 
 root = tk.Tk()
 root.geometry("1000x600")
@@ -16,6 +21,8 @@ file_path = ""
 original_image = None  # Global variable to store the original image
 filtered_image = None  # Global variable to store the result after each filter
 size = 7
+# Directory to save the segmented images
+output_dir = './segmentedImages/'
 
 def add_image():
     global file_path, original_image, filtered_image
@@ -24,8 +31,6 @@ def add_image():
     original_image = Image.open(file_path)   # This line uses the Python Imaging Library (PIL), also known as Pillow, to open the selected image file using the file path stored in file_path. The image is then loaded into the image variable.
     canvas.config(width=original_image.width, height=original_image.height)       # This line updates the dimensions of a Tkinter canvas widget (canvas) to match the dimensions of the resized image. It sets the canvas width and height to match the resized image's width and height.
     image = ImageTk.PhotoImage(original_image)       # Here, the resized image is converted into a Tkinter PhotoImage object using the ImageTk.PhotoImage function. This allows you to display the image in a Tkinter canvas.
-    # canvas.image = image        # This line stores the PhotoImage object in the canvas widget, making sure it's not garbage collected.
-    # canvas.create_image(0, 0, image=image, anchor="nw")     # Finally, this line adds the image to the canvas at the coordinates (0, 0) with an anchor point at the northwest ("nw") corner. This will display the image on the canvas at the specified location.
     canvas.image = ImageTk.PhotoImage(original_image)
     canvas.create_image(0, 0, image=canvas.image, anchor="nw")
     print("Image Dimensions:", original_image.size)
@@ -38,14 +43,38 @@ def apply_filter(filter):
         print("Please select an image first.")
         return
 
+    filtered_image = np.array(filtered_image)
+    filtered_image = cv2.cvtColor(filtered_image, cv2.COLOR_BGR2RGB)
+
     if filter == "Contrast stretch":
-        # image = apply_contrast_stretching(image_np)
-        filtered_image = apply_contrast_stretching(np.array(filtered_image))
+        filtered_image = apply_contrast_stretching(filtered_image)
     elif filter == "Median":
-        # image = apply_median_filter(image_np, 3)
-        filtered_image = apply_median_filter(np.array(filtered_image), size)
+        filtered_image = cv2.cvtColor(filtered_image, cv2.COLOR_BGR2RGB)
+        filtered_image = apply_median_filter(filtered_image, size)
     elif filter == "Sharpen":
-        filtered_image = apply_sharpen_filter(np.array(filtered_image))
+        filtered_image = cv2.cvtColor(filtered_image, cv2.COLOR_BGR2RGB)
+        filtered_image = apply_sharpen_filter(filtered_image)
+
+def apply_segmentation(segmentation_method):
+    global selected_segment_index
+    if segmentation_method == "kMeans":
+        segments = kMeans_segment_image(filtered_image, 5)
+        for i, segment in enumerate(segments):
+            segment_filename = f'segment_{i}.bmp'
+            segment_path = os.path.join(output_dir, segment_filename)
+            # cv2.imwrite(segment_path, segment)
+            cv2.imshow(f'Segment {i}', segment)
+        # Wait for key press
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+        selected_segment_index = simpledialog.askinteger("Input", f"Enter segment index (0 to {len(segments) - 1}):",
+                                                         parent=root, minvalue=0, maxvalue=len(segments) - 1)
+        selected_segment = segments[selected_segment_index]
+        segment_filename = f'selected_segment_{selected_segment_index}.bmp'
+        segment_path = os.path.join(output_dir, segment_filename)
+        cv2.imwrite(segment_path, selected_segment)
+        print(f"Segment {selected_segment_index} saved as {segment_path}")
 
 def select_ksize(ksize_str):
     global size
@@ -60,7 +89,6 @@ def select_ksize(ksize_str):
 
     return size
 
-
 left_frame = tk.Frame(root, width=200, height=600)      #This line creates a frame widget (tk.Frame) named left_frame. The frame is a rectangular area that can hold other widgets. It's given a width of 200 pixels, a height of 600 pixels, and a background color of white.
 left_frame.pack(side="left", fill="y")      # This line uses the .pack() method to display the left_frame on the left side of the root window (root). It takes up the entire available vertical space due to fill="y".
 
@@ -69,12 +97,7 @@ canvas.pack()
 
 select_image_button = tk.Button(left_frame, text="Select Image",
                          command=add_image)     #This line creates a button widget named add_image_button. The button's text is "Add Image," and it has a command associated with it (the add_image function will be executed when the button is clicked). It's placed in the left_frame with a white background.
-select_image_button.pack(pady=15)
-
-print(file_path)
-# Get Tkinter version using Tcl command
-tcl_version = tk.Tcl().eval('info patchlevel')
-print("Tkinter version:", tcl_version)
+select_image_button.pack(pady=10)
 
 # Contrast Filter Button
 contrast_stretch_image_button = tk.Button(left_frame, text="Apply Contrast Stretching",
@@ -97,5 +120,11 @@ median_filter_ksize_select.bind("<<ComboboxSelected>>", lambda event: select_ksi
 sharpen_filter_button = tk.Button(left_frame, text="Apply Sharpen Filter",
                                           command=lambda: apply_filter("Sharpen"))
 sharpen_filter_button.pack(pady=15)
+
+
+# Median Filter Button
+k_means_clustering_button = tk.Button(left_frame, text="Apply k-Means Clustering",
+                                          command=lambda: apply_segmentation("kMeans"))
+k_means_clustering_button.pack()
 
 root.mainloop()

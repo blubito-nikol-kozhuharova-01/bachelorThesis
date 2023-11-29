@@ -10,10 +10,10 @@ from calculatePerimeter import calculate_perimeter
 from calculateArea import calculate_area
 
 # Load the image
-# originalImage = cv2.imread("../../images/ctisus/ctisusBmp/adrenal_1-01.bmp")
+originalImage = cv2.imread("../../images/ctisus/ctisusBmp/adrenal_1-01.bmp")
 # originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-02.bmp")
 # originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-03.bmp")
-originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-05.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-05.bmp")
 # originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-06.bmp")
 # originalImage = cv2.imread("./petCTimagesBMP/adrenal-3C.bmp")
 # originalImage = cv2.imread("./petCTimagesBMP/adrenal-3D.bmp")
