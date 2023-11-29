@@ -56,6 +56,7 @@ def apply_filter(filter):
         filtered_image = apply_sharpen_filter(filtered_image)
 
 def apply_segmentation(segmentation_method):
+    global selected_segment_index
     if segmentation_method == "kMeans":
         segments = kMeans_segment_image(filtered_image, 5)
         for i, segment in enumerate(segments):
@@ -66,6 +67,14 @@ def apply_segmentation(segmentation_method):
         # Wait for key press
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+        selected_segment_index = simpledialog.askinteger("Input", f"Enter segment index (0 to {len(segments) - 1}):",
+                                                         parent=root, minvalue=0, maxvalue=len(segments) - 1)
+        selected_segment = segments[selected_segment_index]
+        segment_filename = f'selected_segment_{selected_segment_index}.bmp'
+        segment_path = os.path.join(output_dir, segment_filename)
+        cv2.imwrite(segment_path, selected_segment)
+        print(f"Segment {selected_segment_index} saved as {segment_path}")
 
 def select_ksize(ksize_str):
     global size
@@ -80,29 +89,6 @@ def select_ksize(ksize_str):
 
     return size
 
-
-def display_and_select_segment():
-    global selected_segment_index
-    segments = kMeans_segment_image(filtered_image, 5)
-    for i, segment in enumerate(segments):
-        cv2.imshow(f'Segment {i}', segment)
-
-    # Allow the user to select a segment
-    selected_segment_index = simpledialog.askinteger("Input", f"Enter segment index (0 to {len(segments) - 1}):", parent=root, minvalue=0, maxvalue=len(segments) - 1)
-
-def save_selected_segment():
-    global selected_segment_index
-    if selected_segment_index is not None:
-        segments = kMeans_segment_image(filtered_image, 5)
-        selected_segment = segments[selected_segment_index]
-        segment_filename = f'selected_segment_{selected_segment_index}.bmp'
-        segment_path = os.path.join(output_dir, segment_filename)
-        cv2.imwrite(segment_path, selected_segment)
-        print(f"Segment {selected_segment_index} saved as {segment_path}")
-
-
-
-
 left_frame = tk.Frame(root, width=200, height=600)      #This line creates a frame widget (tk.Frame) named left_frame. The frame is a rectangular area that can hold other widgets. It's given a width of 200 pixels, a height of 600 pixels, and a background color of white.
 left_frame.pack(side="left", fill="y")      # This line uses the .pack() method to display the left_frame on the left side of the root window (root). It takes up the entire available vertical space due to fill="y".
 
@@ -112,10 +98,6 @@ canvas.pack()
 select_image_button = tk.Button(left_frame, text="Select Image",
                          command=add_image)     #This line creates a button widget named add_image_button. The button's text is "Add Image," and it has a command associated with it (the add_image function will be executed when the button is clicked). It's placed in the left_frame with a white background.
 select_image_button.pack(pady=10)
-
-# Get Tkinter version using Tcl command
-tcl_version = tk.Tcl().eval('info patchlevel')
-print("Tkinter version:", tcl_version)
 
 # Contrast Filter Button
 contrast_stretch_image_button = tk.Button(left_frame, text="Apply Contrast Stretching",
@@ -144,14 +126,5 @@ sharpen_filter_button.pack(pady=15)
 k_means_clustering_button = tk.Button(left_frame, text="Apply k-Means Clustering",
                                           command=lambda: apply_segmentation("kMeans"))
 k_means_clustering_button.pack()
-
-
-# Display and Select Segments Button
-display_select_button = tk.Button(left_frame, text="Display and Select Segments", command=display_and_select_segment)
-display_select_button.pack(pady=15)
-
-# Save Selected Segment Button
-save_segment_button = tk.Button(left_frame, text="Save Selected Segment", command=save_selected_segment)
-save_segment_button.pack(pady=15)
 
 root.mainloop()
