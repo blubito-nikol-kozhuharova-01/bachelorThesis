@@ -8,6 +8,7 @@ from tkinter import simpledialog
 from medianFilterFunc import apply_median_filter, apply_sharpen_filter
 from contrastStretchFunc import apply_contrast_stretching
 from kMeansClusteringFunc import kMeans_segment_image
+from regionGrowingFunc import perform_region_growing
 import os
 
 
@@ -58,7 +59,7 @@ def apply_filter(filter):
 def apply_segmentation(segmentation_method):
     global selected_segment_index
     if segmentation_method == "kMeans":
-        segments = kMeans_segment_image(filtered_image, 5)
+        segments = kMeans_segment_image(filtered_image, 4)
         for i, segment in enumerate(segments):
             segment_filename = f'segment_{i}.bmp'
             segment_path = os.path.join(output_dir, segment_filename)
@@ -75,6 +76,13 @@ def apply_segmentation(segmentation_method):
         segment_path = os.path.join(output_dir, segment_filename)
         cv2.imwrite(segment_path, selected_segment)
         print(f"Segment {selected_segment_index} saved as {segment_path}")
+
+    elif segmentation_method == "regrow":
+        grayImage = cv2.cvtColor(filtered_image, cv2.COLOR_BGR2GRAY)
+        segment = perform_region_growing(grayImage)
+        cv2.imshow('Region Growing Segment', segment)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 def select_ksize(ksize_str):
     global size
@@ -111,7 +119,7 @@ median_filter_button = tk.Button(left_frame, text="Apply Median Filter",
 median_filter_button.pack()
 
 median_filter_ksize_select = ttk.Combobox(left_frame, values=["3", "5", "7", "9"], width=5)
-median_filter_ksize_select.pack()
+median_filter_ksize_select.pack(pady=15)
 
 median_filter_ksize_select.bind("<<ComboboxSelected>>", lambda event: select_ksize(median_filter_ksize_select.get()))
 
@@ -122,9 +130,13 @@ sharpen_filter_button = tk.Button(left_frame, text="Apply Sharpen Filter",
 sharpen_filter_button.pack(pady=15)
 
 
-# Median Filter Button
+# K-Means Clustering Button
 k_means_clustering_button = tk.Button(left_frame, text="Apply k-Means Clustering",
                                           command=lambda: apply_segmentation("kMeans"))
-k_means_clustering_button.pack()
+k_means_clustering_button.pack(pady=15)
+
+# Region Growing Button
+region_growing_button = tk.Button(left_frame, text="Apply Region Growing", command=lambda: apply_segmentation("regrow"))
+region_growing_button.pack(pady=15)
 
 root.mainloop()

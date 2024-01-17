@@ -23,4 +23,3 @@ def apply_sharpen_filter(image):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     return sharpen
-
