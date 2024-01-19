@@ -9,6 +9,7 @@ from medianFilterFunc import apply_median_filter, apply_sharpen_filter
 from contrastStretchFunc import apply_contrast_stretching
 from kMeansClusteringFunc import kMeans_segment_image
 from regionGrowingFunc import perform_region_growing
+from diceCoefficient import calculateDiceCoefficient
 import os
 
 
@@ -24,6 +25,8 @@ filtered_image = None  # Global variable to store the result after each filter
 size = 7
 # Directory to save the segmented images
 output_dir = './segmentedImages/'
+segment1_path = ''
+segment2_path = ''
 
 def add_image():
     global file_path, original_image, filtered_image
@@ -37,6 +40,24 @@ def add_image():
     print("Image Dimensions:", original_image.size)
     filtered_image = original_image.copy()  # Initialize filtered_image with the original image
     print(file_path)
+
+def add_segment1():
+    print('hello1')
+    global segment1_path
+    segment1_path = filedialog.askopenfilename(
+        initialdir="./segmentedImages")    # This line opens a file dialog box, which allows the user to select an image file. The askopenfilename function is a part of the filedialog module, and it opens a standard file dialog. The initialdir parameter sets the initial directory that the file dialog should open in. The selected file's path is stored in the file_path variable.
+    # segment1_image = Image.open(segment1_path)   # This line uses the Python Imaging Library (PIL), also known as Pillow, to open the selected image file using the file path stored in file_path. The image is then loaded into the image variable.
+    # print("Image Dimensions:", segment1_image.size)
+    return segment1_path
+
+def add_segment2():
+    print('hello2')
+    global segment2_path
+    segment2_path = filedialog.askopenfilename(
+        initialdir="./segmentedImages")    # This line opens a file dialog box, which allows the user to select an image file. The askopenfilename function is a part of the filedialog module, and it opens a standard file dialog. The initialdir parameter sets the initial directory that the file dialog should open in. The selected file's path is stored in the file_path variable.
+    # segment1_image = Image.open(segment1_path)   # This line uses the Python Imaging Library (PIL), also known as Pillow, to open the selected image file using the file path stored in file_path. The image is then loaded into the image variable.
+    # print("Image Dimensions:", segment1_image.size)
+    return segment2_path
 
 def apply_filter(filter):
     global file_path, original_image, filtered_image
@@ -73,13 +94,17 @@ def apply_segmentation(segmentation_method):
                                                          parent=root, minvalue=0, maxvalue=len(segments) - 1)
         selected_segment = segments[selected_segment_index]
         segment_filename = f'selected_segment_{selected_segment_index}.bmp'
-        segment_path = os.path.join(output_dir, segment_filename)
+        segment_path = os.path.join(output_dir, 'kMeansSegmentedImages/', segment_filename)
         cv2.imwrite(segment_path, selected_segment)
         print(f"Segment {selected_segment_index} saved as {segment_path}")
+
+        return segment_path
 
     elif segmentation_method == "regrow":
         grayImage = cv2.cvtColor(filtered_image, cv2.COLOR_BGR2GRAY)
         segment = perform_region_growing(grayImage)
+        # segment_path = os.path.join(output_dir, 'kMeansSegmentedImages/', segment_filename)
+
         cv2.imshow('Region Growing Segment', segment)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -138,5 +163,20 @@ k_means_clustering_button.pack(pady=15)
 # Region Growing Button
 region_growing_button = tk.Button(left_frame, text="Apply Region Growing", command=lambda: apply_segmentation("regrow"))
 region_growing_button.pack(pady=15)
+
+# Select Segment 1 Button
+select_segment1_button = tk.Button(left_frame, text="Select Segment 1", command= add_segment1)
+select_segment1_button.pack(pady=15)
+
+# Select Segment 2 Button
+select_segment2_button = tk.Button(left_frame, text="Select Segment 2", command= add_segment2)
+select_segment2_button.pack(pady=15)
+
+
+
+# dice_coefficient_button
+dice_coefficient_button = tk.Button(left_frame, text="Calculate Dice Coefficient", command=lambda: calculateDiceCoefficient(segment1_path, segment2_path))
+dice_coefficient_button.pack(pady=15)
+
 
 root.mainloop()
