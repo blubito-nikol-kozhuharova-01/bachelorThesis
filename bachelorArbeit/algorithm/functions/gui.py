@@ -100,10 +100,12 @@ def apply_segmentation(segmentation_method):
         return segment_path
 
     elif segmentation_method == "regrow":
+        image_name = os.path.splitext(os.path.basename(file_path))[0]
         grayImage = cv2.cvtColor(filtered_image, cv2.COLOR_BGR2GRAY)
         segment = perform_region_growing(grayImage)
-        # segment_path = os.path.join(output_dir, 'kMeansSegmentedImages/', segment_filename)
-
+        segment_path = os.path.join(output_dir, 'reGrowSegmentedImages/', f'{image_name}_region_growing.bmp')  # Add '.bmp' to the filename
+        cv2.imwrite(segment_path, segment)
+        print(segment)
         cv2.imshow('Region Growing Segment', segment)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
