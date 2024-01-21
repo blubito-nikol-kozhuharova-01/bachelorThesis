@@ -4,13 +4,13 @@ import numpy as np
 # Load the segmented binary images
 # image1 = cv2.imread('../images/ctisus/ctisusBmp/adrenal_1-01_selected_binary1.bmp', cv2.IMREAD_GRAYSCALE)
 # image1 = cv2.imread('../images/ctisus/ctisusBmp/adrenal_1-01_selected_binary3.bmp', cv2.IMREAD_GRAYSCALE)
-image1 = cv2.imread('./functions/segmentedImages/adrenal-1-02-segment.bmp', cv2.IMREAD_GRAYSCALE)
+image1 = cv2.imread('functions/segmentedImages/manualSelectedSegments/adrenal-1-02-manual.bmp', cv2.IMREAD_GRAYSCALE)
 
 
 # image2 = cv2.imread('./functions/segmentedImages/regGrowingSegment.bmp', cv2.IMREAD_GRAYSCALE)
 # image2 = cv2.imread('./functions/segmentedImages/segment_1.bmp', cv2.IMREAD_GRAYSCALE)
 # image2 = cv2.imread('./functions/segmentedImages/grabcutSegment.bmp', cv2.IMREAD_GRAYSCALE)
-image2 = cv2.imread('./functions/segmentedImages/selected_segment_1.bmp', cv2.IMREAD_GRAYSCALE)
+image2 = cv2.imread('functions/segmentedImages/kMeansSegmentedImages/selected_segment_1.bmp', cv2.IMREAD_GRAYSCALE)
 
 
 # Check if the images were loaded successfully

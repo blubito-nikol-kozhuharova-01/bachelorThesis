@@ -42,21 +42,15 @@ def add_image():
     print(file_path)
 
 def add_segment1():
-    print('hello1')
     global segment1_path
     segment1_path = filedialog.askopenfilename(
-        initialdir="./segmentedImages")    # This line opens a file dialog box, which allows the user to select an image file. The askopenfilename function is a part of the filedialog module, and it opens a standard file dialog. The initialdir parameter sets the initial directory that the file dialog should open in. The selected file's path is stored in the file_path variable.
-    # segment1_image = Image.open(segment1_path)   # This line uses the Python Imaging Library (PIL), also known as Pillow, to open the selected image file using the file path stored in file_path. The image is then loaded into the image variable.
-    # print("Image Dimensions:", segment1_image.size)
+        initialdir="./segmentedImages")
     return segment1_path
 
 def add_segment2():
-    print('hello2')
     global segment2_path
     segment2_path = filedialog.askopenfilename(
-        initialdir="./segmentedImages")    # This line opens a file dialog box, which allows the user to select an image file. The askopenfilename function is a part of the filedialog module, and it opens a standard file dialog. The initialdir parameter sets the initial directory that the file dialog should open in. The selected file's path is stored in the file_path variable.
-    # segment1_image = Image.open(segment1_path)   # This line uses the Python Imaging Library (PIL), also known as Pillow, to open the selected image file using the file path stored in file_path. The image is then loaded into the image variable.
-    # print("Image Dimensions:", segment1_image.size)
+        initialdir="./segmentedImages")
     return segment2_path
 
 def apply_filter(filter):
@@ -94,8 +88,13 @@ def apply_segmentation(segmentation_method):
                                                          parent=root, minvalue=0, maxvalue=len(segments) - 1)
         selected_segment = segments[selected_segment_index]
         segment_filename = f'selected_segment_{selected_segment_index}.bmp'
-        segment_path = os.path.join(output_dir, 'kMeansSegmentedImages/', segment_filename)
+        # Get the base filename without extension
+        image_name = os.path.splitext(os.path.basename(file_path))[0]
+        # segment_path = os.path.join(output_dir, 'kMeansSegmentedImages/', segment_filename)
+        segment_path = os.path.join(output_dir, 'kMeansSegmentedImages/', f'{image_name}_{segment_filename}')
+
         cv2.imwrite(segment_path, selected_segment)
+        print(image_name)
         print(f"Segment {selected_segment_index} saved as {segment_path}")
 
         return segment_path
