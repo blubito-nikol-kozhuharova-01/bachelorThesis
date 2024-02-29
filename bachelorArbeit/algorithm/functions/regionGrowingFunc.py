@@ -80,7 +80,7 @@ def region_growing(img, seed):
 def perform_region_growing(image):
     clicks = []
     # image = cv2.imread(image_path, 0)
-    ret, img = cv2.threshold(image, 150, 255, cv2.THRESH_BINARY)
+    ret, img = cv2.threshold(image, 150, 255, cv2.THRESH_BINARY)    # Pixels with intensity values greater than or equal to 150 are considered as part of the region of interest
     cv2.namedWindow('Input')
 
     def on_mouse(event, x, y, flags, params):

@@ -1,7 +1,10 @@
 import cv2
 import numpy as np
+from calculateArea import calculate_area
+from calculatePerimeter import calculate_perimeter
 
 def calculateDiceCoefficient(image1, image2):
+    segment = image1
     image1 = cv2.imread(image1, cv2.IMREAD_GRAYSCALE)
     image2 = cv2.imread(image2, cv2.IMREAD_GRAYSCALE)
 
@@ -22,10 +25,16 @@ def calculateDiceCoefficient(image1, image2):
         # Calculate the Dice coefficient
         dice_coefficient = (2 * np.sum(intersection)) / (sum_image1 + sum_image2)
 
+        segment_area = round(calculate_area(segment), 1)
+        segment_perimeter = round(calculate_perimeter(segment), 1)
+
         # Print the Dice coefficient
         print('Dice Coefficient:', dice_coefficient)
-        print(sum_image1)
-        print(sum_image2)
+        # print('Sum of pixels in image 1', sum_image1)
+        # print('Sum of pixels in image 2', sum_image2)
+        print('Area of segment: ', segment_area)
+        print('Perimeter of segment: ', segment_perimeter)
+
 
         # Display the binary images and the intersection
         cv2.imshow('Binary Image 1', binary_image1)

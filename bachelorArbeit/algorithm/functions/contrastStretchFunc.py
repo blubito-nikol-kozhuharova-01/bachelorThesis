@@ -8,7 +8,7 @@ def apply_contrast_stretching(img):
     stretched_image = exposure.rescale_intensity(img, in_range=(p2, p98))
     # rgb_stretched_image = cv2.cvtColor(stretched_image, cv2.COLOR_BGR2RGB)
 
-    cv2.imshow('stretched image', stretched_image)
+    cv2.imshow('Contrast enhanced image', stretched_image)
 
     # Wait for key press
     cv2.waitKey(0)
