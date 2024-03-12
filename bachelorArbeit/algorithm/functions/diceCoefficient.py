@@ -1,16 +1,12 @@
 import cv2
 import numpy as np
-from calculateArea import calculate_area
-from calculatePerimeter import calculate_perimeter
 
 def calculateDiceCoefficient(image1, image2):
-    segment = cv2.imread(image1, cv2.IMREAD_GRAYSCALE)
-
     image1 = cv2.imread(image1, cv2.IMREAD_GRAYSCALE)
     image2 = cv2.imread(image2, cv2.IMREAD_GRAYSCALE)
 
     if image1 is None or image2 is None:
-        print('Failed to load segmented binary images.')
+        print('Failed to load segmented images.')
     else:
         # Threshold the images to obtain binary masks
         _, binary_image1 = cv2.threshold(image1, 127, 255, cv2.THRESH_BINARY)
@@ -27,7 +23,7 @@ def calculateDiceCoefficient(image1, image2):
         dice_coefficient = (2 * np.sum(intersection)) / (sum_image1 + sum_image2)
 
         # Find contours of tumors
-        contours, _ = cv2.findContours(segment, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, _ = cv2.findContours(image1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         # Iterate through each tumor
         for i, contour in enumerate(contours):
@@ -39,16 +35,7 @@ def calculateDiceCoefficient(image1, image2):
 
             print(f"Tumor {i + 1}: Area = {area}, Perimeter = {perimeter}")
 
-        # segment_area = round(calculate_area(segment), 1)
-        # segment_perimeter = round(calculate_perimeter(segment), 1)
-
-        # Print the Dice coefficient
         print('Dice Coefficient:', dice_coefficient)
-        # print('Sum of pixels in image 1', sum_image1)
-        # print('Sum of pixels in image 2', sum_image2)
-        # print('Area of segment: ', segment_area)
-        # print('Perimeter of segment: ', segment_perimeter)
-
 
         # Display the binary images and the intersection
         cv2.imshow('Binary Image 1', binary_image1)
